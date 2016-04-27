@@ -9,6 +9,7 @@ class IntakeTime(models.Model):
 
     intake_time = models.TimeField(('Expected Intake Time'), blank=True, null=True)
 
+
     def __str__(self):
         return ', '.join([str(self.intake_time)])
 
@@ -21,13 +22,15 @@ class MedicationIntake(models.Model):
 
     contents = models.TextField(blank=True, null=True)
     expected_intake = models.ForeignKey(IntakeTime, blank=True, null=True)
+
+    objects = managers.MedicationIntakeManager()
     
     class Meta:
         verbose_name = 'Medication Intake'
         verbose_name_plural = 'Medication Intake'
 
     def __str__(self):
-        return ', '.join([str(self.user), str(self.expected_intake__intake_time)])
+        return ', '.join([str(self.user), str(self.expected_intake.intake_time)])
 
 
 class NodeMetaData(models.Model):

@@ -9,6 +9,12 @@ from . import views
 
 urlpatterns = [
 
+    url(
+        regex=r'^api/timing$', 
+        view=views.get_intake_timing_api, 
+        name="get_timing"
+    ),
+
     # URL pattern for the DashboardRedirectView
     url(
         regex=r'^~redirect/$',

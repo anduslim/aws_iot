@@ -3,6 +3,12 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from aws_iot.users.models import User
+from .models import IntakeTime, MedicationIntake
+from django.core.serializers.json import DjangoJSONEncoder
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+import datetime, json
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotFound
 
 
 class DashboardRedirectView(LoginRequiredMixin, RedirectView):
@@ -185,3 +191,33 @@ class DashboardUserView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, *args, **kwargs):
         return super(DashboardUserView, self).dispatch(*args, **kwargs)
+
+
+@csrf_exempt
+def get_intake_timing_api(request, **kwargs):
+    '''
+    API HTTP GET call to retrieve medication intake timings
+    HTTP parameters: seqno, timestamp, node_id, sensor_id, readings
+    '''
+
+    data = request.GET
+    getsource = data.get('source', None)
+    getdestination = data.get('destination', None)
+
+    readings = MedicationIntake.objects.get()
+
+    if readings:
+        response_data = {}
+        response_data['status'] = {'code': 200,
+                                    'timestamp': datetime.datetime.now(),
+                                }
+
+
+        response_data['readings'] = {
+                                    'payload': readings
+                                    }
+
+        return HttpResponse(json.dumps(response_data, cls=DjangoJSONEncoder), status=200, content_type="application/json")
+    else:
+        messages.add_message(request, messages.ERROR, "Error!Readings do not exist.")
+        return HttpResponseNotFound(content=dict(error_code=404, error_msg="Readings do not exist."))

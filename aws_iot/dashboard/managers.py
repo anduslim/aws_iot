@@ -1,6 +1,17 @@
 from django.db import models, IntegrityError
 
 
+class MedicationIntakeManager(models.Manager):
+
+	def get_timing(self, source=None, destination=None):
+
+	    try:
+	        readings = self.model.objects.get()
+	    except self.model.DoesNotExist:
+	        readings = False
+
+	    return readings
+
 class SensorNodeManager(models.Manager):
 
 	def create_sensor(self, payload):

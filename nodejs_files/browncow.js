@@ -38,6 +38,7 @@ EstimoteSticker.on('discover', function(estimoteSticker) {
 });
 
 EstimoteSticker.startScanning();
+light_led();
 
 // Parse data and returns in callback
 function relevantdata(estimoteSticker, callback) {
@@ -62,9 +63,10 @@ function relevantdata(estimoteSticker, callback) {
 	console.log(estimoteSticker.acceleration['z'])
 	if (estimoteSticker.acceleration['z'] <= -500.0) 
 		console.log('state: close')
-	else
-		console.log('state: open')
-
+	else {
+		console.log('state: open');
+		device.publish('chip/led', 'OFF');
+	} 
 	callback(relevantJson);
 } // end relevantdata
 
@@ -72,6 +74,11 @@ function publish(sticker) {
 	console.log("publishing sticker reading!");
 	device.publish('chip/sticker', JSON.stringify(sticker));
 } // end publish
+
+function light_led() {
+	device.publish('chip/led', 'ON');
+	var t = setTimeout(light_led, 90000);
+} 
 
 function exit() {
 	process.exit();

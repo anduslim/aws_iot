@@ -21,6 +21,12 @@ urlpatterns = [
         name="post_derived_reading"
     ),
 
+    url(
+        regex=r'^api/get_derived_reading$', 
+        view=views.get_derived_reading_api, 
+        name="get_derived_reading_api"
+    ),
+
     # URL pattern for the DashboardRedirectView
     url(
         regex=r'^~redirect/$',

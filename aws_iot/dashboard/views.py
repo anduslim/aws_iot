@@ -248,7 +248,7 @@ def post_derived_reading_api(request, **kwargs):
         is_open = False
     else:
         is_open = None
-        
+
     if sensor_id is None or is_open is None:
         return HttpResponse(status=404)
 
@@ -270,3 +270,37 @@ def post_derived_reading_api(request, **kwargs):
                                 }
 
     return HttpResponse(json.dumps(response_data), status=200, content_type="application/json")
+
+
+@csrf_exempt
+def get_derived_reading_api(request, **kwargs):
+
+    '''
+    API HTTP GET call to retrieve derived medication intake timings
+    HTTP parameters: node_id
+    '''
+
+    data = request.GET
+    node_id = data.get('node_id', 100)
+    from_ts = data.get('from_ts', None)
+
+    print("from_ts", from_ts)
+
+    node = SensorNode.objects.get(node_id=node_id)
+
+    reading_list = []
+    readings = DerivedIntakeReading.objects.filter(sensor_id=node)
+    for reading in readings:
+        if (reading.modified_timestamp >= from_ts):
+            reading_list.append(reading)
+    response_data = {}
+    response_data['status'] = {'code': 200,
+                               'timestamp': datetime.datetime.now(),
+                              }
+    response_data['readings'] = {
+                                    'node_id': node_id,
+                                    'expected_timings': payload,
+                                    'reading_list': reading_list,
+                                    }
+
+    return HttpResponse(json.dumps(response_data, cls=DjangoJSONEncoder), status=200, content_type="application/json")

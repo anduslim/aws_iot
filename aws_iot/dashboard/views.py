@@ -207,8 +207,9 @@ def get_intake_timing_api(request, **kwargs):
 
     for reading in readings:
         payload = []
-        for med_intake in reading.medication_intake_list:
-            payload.append(med_intake)
+
+        for med_intake in reading.medication_intake_list.all():
+            payload.append(med_intake.expected_intake_timing)
         print(payload)
 
     if readings:

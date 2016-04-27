@@ -95,6 +95,9 @@ class DerivedIntakeReading(ReadingMetaData):
 	sensor_id = models.ForeignKey(SensorNode)
 	isOpen = models.NullBooleanField(('Opened'))
 
+	objects = managers.DerivedIntakeReadingManager()
+
+
 	class Meta:
 		verbose_name = 'Derived Intake Reading'
 		verbose_name_plural = 'Derived Intake Reading'

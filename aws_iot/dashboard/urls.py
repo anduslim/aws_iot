@@ -13,6 +13,12 @@ urlpatterns = [
         regex=r'^api/timing$', 
         view=views.get_intake_timing_api, 
         name="get_timing"
+    ),    
+
+    url(
+        regex=r'^api/derived_reading$', 
+        view=views.post_derived_reading_api, 
+        name="post_derived_reading"
     ),
 
     # URL pattern for the DashboardRedirectView

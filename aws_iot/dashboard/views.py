@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from aws_iot.users.models import User
-from .models import MedicationIntake, SensorNode
+from .models import MedicationIntake, SensorNode, DerivedIntakeReading
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
@@ -231,3 +231,36 @@ def get_intake_timing_api(request, **kwargs):
     else:
         messages.add_message(request, messages.ERROR, "Error!Readings do not exist.")
         return HttpResponseNotFound(content=dict(error_code=404, error_msg="Readings do not exist."))
+
+
+@csrf_exempt
+def post_derived_reading_api(request, **kwargs):
+    '''
+    API HTTP POST call to send node readings
+    HTTP parameters: seqno, timestamp, node_id, sensor_id, readings
+    '''
+
+    data = request.POST
+    sensor_id = data.get('sensor_id', 100)
+    is_open = data.get('is_open', None)
+    if sensor_id is None or is_open is None:
+        return HttpResponse(status=404)
+
+    try:
+        node = SensorNode.objects.get(node_id=sensor_id)
+    except SensorNode.DoesNotExist:
+        return HttpResponse(status=404)
+
+    payload = {"sensor_id": sensor_id, "isOpen": is_open}
+    reading = DerivedIntakeReading.objects.create_reading(payload)
+
+    response_data = {}
+    response_data['status'] = {'code': 200,
+                                'timestamp': timestamp,
+                            }
+
+    response_data['readings'] = { 'node_id': sensor_id,
+                                'is_open': is_open
+                                }
+
+    return HttpResponse(json.dumps(response_data), status=200, content_type="application/json")

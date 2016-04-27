@@ -50,3 +50,16 @@ class SensorStickerReadingManager(models.Manager):
 			return 0
 
 		return 1
+
+class DerivedIntakeReadingManager(models.Manager):
+
+	def create_reading(self, payload):
+
+		print(payload)
+
+		try:
+			reading = self.create(sensor_id=payload['sensor_id'], isOpen=payload['isOpen'])
+		except IntegrityError as e:
+			return 0
+
+		return 1

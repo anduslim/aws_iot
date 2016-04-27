@@ -11,6 +11,7 @@ class MedicationIntake(models.Model):
 	contents = models.TextField(blank=True, null=True)
 
 	expected_intake_timing = models.TimeField(('Expected Intake Time'), blank=True, null=True)
+	timing_threshold_min = models.IntegerField(('Threshold (min)'), default=2)
 	
 	class Meta:
 		verbose_name = '*Medication Intake'

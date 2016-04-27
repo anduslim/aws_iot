@@ -11,7 +11,6 @@ class MedicationIntake(models.Model):
 	contents = models.TextField(blank=True, null=True)
 
 	expected_intake_timing = models.TimeField(('Expected Intake Time'), blank=True, null=True)
-	timing_threshold_min = models.IntegerField(('Threshold (min)'), default=2)
 	
 	class Meta:
 		verbose_name = '*Medication Intake'
@@ -44,6 +43,7 @@ class SensorNode(NodeMetaData):
 
 	uuid = models.UUIDField(('UUID'), blank=True, null=True)
 	medication_intake_list = models.ManyToManyField(MedicationIntake, blank=True, null=True)
+	timing_threshold_min = models.IntegerField(('Threshold (min)'), default=2)
 
 	objects = managers.SensorNodeManager()
 

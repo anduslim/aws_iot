@@ -205,14 +205,16 @@ def get_intake_timing_api(request, **kwargs):
 
     readings = SensorNode.objects.filter(node_id=node_id)
 
-    for reading in readings:
+    # should return only one reading
+    # for reading in readings:
+    reading = readings[0]
+    
+    if readings:
         payload = []
-
         for med_intake in reading.medication_intake_list.all():
             payload.append(med_intake.expected_intake_timing)
         print(payload)
 
-    if readings:
         response_data = {}
         response_data['status'] = {'code': 200,
                                     'timestamp': datetime.datetime.now(),
@@ -220,7 +222,9 @@ def get_intake_timing_api(request, **kwargs):
 
 
         response_data['readings'] = {
-                                    'payload': payload
+                                    'node_id': node_id,
+                                    'expected_timings': payload,
+                                    'threshold_min': reading.timing_threshold_min,
                                     }
 
         return HttpResponse(json.dumps(response_data, cls=DjangoJSONEncoder), status=200, content_type="application/json")

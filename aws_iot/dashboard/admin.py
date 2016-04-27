@@ -8,7 +8,7 @@ class SensorStickerReadingAdmin(admin.ModelAdmin):
 	list_display = ('id', 'sensor_id', 'acc', 'battery_level', 'power', 'server_timestamp')
 
 class DerivedIntakeReadingAdmin(admin.ModelAdmin):	
-	list_display = ('id', 'sensor_id', 'isOpen', 'server_timestamp')
+	list_display = ('id', 'sensor_id', 'isOpen', 'modified_timestamp')
 
 admin.site.register(MedicationIntake)
 admin.site.register(SensorNode)

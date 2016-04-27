@@ -232,7 +232,6 @@ def get_intake_timing_api(request, **kwargs):
         messages.add_message(request, messages.ERROR, "Error!Readings do not exist.")
         return HttpResponseNotFound(content=dict(error_code=404, error_msg="Readings do not exist."))
 
-
 @csrf_exempt
 def post_derived_reading_api(request, **kwargs):
     '''
@@ -243,6 +242,13 @@ def post_derived_reading_api(request, **kwargs):
     data = request.POST
     sensor_id = data.get('sensor_id', 100)
     is_open = data.get('is_open', None)
+    if (is_open == '1'):
+        is_open = True
+    elif (is_open == '0'):
+        is_open = False
+    else:
+        is_open = None
+        
     if sensor_id is None or is_open is None:
         return HttpResponse(status=404)
 
@@ -251,13 +257,13 @@ def post_derived_reading_api(request, **kwargs):
     except SensorNode.DoesNotExist:
         return HttpResponse(status=404)
 
-    payload = {"sensor_id": sensor_id, "isOpen": is_open}
+    node = SensorNode.objects.get(node_id=sensor_id)
+
+    payload = {"sensor_id": node, "isOpen": is_open}
     reading = DerivedIntakeReading.objects.create_reading(payload)
 
     response_data = {}
-    response_data['status'] = {'code': 200,
-                                'timestamp': timestamp,
-                            }
+    response_data['status'] = {'code': 200}
 
     response_data['readings'] = { 'node_id': sensor_id,
                                 'is_open': is_open

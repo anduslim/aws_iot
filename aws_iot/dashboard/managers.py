@@ -14,6 +14,12 @@ class MedicationIntakeManager(models.Manager):
 
 class SensorNodeManager(models.Manager):
 
+	def get_sensor(self, node_id):
+		print(node_id)
+		node = self.model.objects.get(node_id=node_id)
+
+		return node
+
 	def create_sensor(self, payload):
 
 		print(payload)
@@ -56,6 +62,7 @@ class DerivedIntakeReadingManager(models.Manager):
 	def create_reading(self, payload):
 
 		print(payload)
+
 
 		try:
 			reading = self.create(sensor_id=payload['sensor_id'], isOpen=payload['isOpen'])

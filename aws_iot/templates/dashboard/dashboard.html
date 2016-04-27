@@ -8,6 +8,10 @@
 {% block breadcrumb_title %}Dashboard{% endblock %}
 {% block dashboard_menu_active %}nav-active{% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/chartist/chartist.css' %}">
+{% endblock %}
+
 {% block notification_badge_count %}{{ notifications|length }}{% endblock %}
 {% block notification_label_count %}{{ notifications|length }}{% endblock %}
 {% block notification_list %}
@@ -54,7 +58,7 @@
             <div class="panel-body">
                 <div id="mytime" class="headline text-primary">{{ overall_status }}
                 </div>
-                <div class="subline">{{ overall_message }}
+                <div class="subline">Monitoring medication in progress.
                 </div>
                 <div class="subtext">
                 </div>
@@ -67,7 +71,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 col-lg-6 col-xl-3">
+    <div class="col-md-6 col-lg-6 col-xl-offset-3 col-xl-3">
         <section class="panel panel-featured-left panel-featured-tertiary">
             <div class="panel-body">
                 <div class="widget-summary">
@@ -80,12 +84,12 @@
                         <div class="summary">
                             <h4 class="title">Medication Timing</h4>
                             <div class="info">
-                                <strong class="amount">{{ services.overall_status }}</strong>
-                                <span class="text-primary">({{ services.count }})</span>
+                                <strong class="amount">10:00, 14:00</strong>
+                                <span class="text-primary">(2 timings)</span>
                             </div>
                         </div>
                         <div class="summary-footer">
-                            <a href="#modalServices" class="modal-services text-muted text-uppercase">(View All)</a>
+<!--                             <a href="#modalServices" class="modal-services text-muted text-uppercase">(View All)</a> -->
                             <!-- Modal Form -->
                             <div id="modalServices" class="modal-block modal-header-color modal-block-info mfp-hide">
                                 <section class="panel">
@@ -142,12 +146,11 @@
                         <div class="summary">
                             <h4 class="title">Alert Threshold</h4>
                             <div class="info">
-                                <strong class="amount">{{ hosts.overall_status }}</strong>
-                                <span class="text-primary">({{ hosts.count }})</span>
+                                <strong class="amount">2 hours</strong>
                             </div>
                         </div>
                         <div class="summary-footer">
-                            <a href="#modalHosts"class="modal-hosts text-muted text-uppercase">(View All)</a>
+<!--                             <a href="#modalHosts"class="modal-hosts text-muted text-uppercase">(View All)</a> -->
                             <div id="modalHosts" class="modal-block modal-header-color modal-block-info mfp-hide">
                                 <section class="panel">
                                     <header class="panel-heading">
@@ -189,6 +192,26 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+
+                <h2 class="panel-title">Medication Adherence: Medication Intake </h2>
+            </header>
+            <div class="panel-body">
+                <div id="ChartistLineScatterDiagramWithResponsiveSettings" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+
+                <!-- See: assets/javascripts/ui-elements/examples.charts.js for the example code. -->
             </div>
         </section>
     </div>
@@ -252,5 +275,7 @@
         }
     });
 </script>
-
+        <!-- Specific Page Vendor -->
+        <script src="{% static 'js/chartist/chartist.js' %}"></script>
+        <script src="{% static 'js/dashboard/examples.charts.js' %}"></script>
 {% endblock %}

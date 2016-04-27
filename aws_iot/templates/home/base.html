@@ -1,0 +1,193 @@
+{% load staticfiles i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}on_admin{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Web Fonts  -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    {% block css %}
+    <!-- Latest compiled and minified CSS -->
+    <link href="{% static 'css/bootstrap/bootstrap.css' %}" rel="stylesheet"/>
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap-theme.min.css' %}">
+
+    <!-- Your stuff: Third-party css libraries go here -->
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap/datepicker3.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ui-lightness/jquery-ui-1.10.4.custom.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap-multiselect.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/morris/morris.css' %}" />
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Nothing+You+Could+Do|Quicksand:400,700,300">
+    <!-- This file store project specific CSS -->
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="{% static 'css/skins/default.css' %}" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/theme-custom.css' %}">
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <!-- Head Libs -->
+    <script src="{% static 'js/modernizr/modernizr.js' %}"></script>
+    {% endblock %}
+
+    {% block angular %}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    {% endblock %}
+
+  </head>
+
+  <body>
+
+    <!-- start: header -->
+    <header class="header">
+      <div class="logo-container">
+        <a href="{% url 'home:home' %}" class="logo">
+          <img src="{% static 'images/logo.png' %}" height="35" alt="OnAdmin" />
+        </a>
+      </div>
+
+      <!-- start: search & user box -->
+      <div class="header-right">
+
+        {% if request.user.is_authenticated %}
+        <span class="separator"></span>
+        <div id="userbox" class="userbox">
+          <a href="#" data-toggle="dropdown">
+            <figure class="profile-picture">
+              <img src="{% static 'images/!logged-user.jpg' %}" alt="Joseph Doe" class="img-circle" data-lock-picture="{% static 'images/!logged-user.jpg' %}" />
+            </figure>
+            <div class="profile-info" data-lock-name="{{ request.user.username}}" data-lock-email="{{ request.user.email}}">
+              <span class="name">{{ request.user.username}}</span>
+              <span class="role">{% if request.user.is_staff %}administrator{% else %}user{% endif %}</span>
+            </div>
+
+            <i class="fa custom-caret"></i>
+          </a>
+
+          <div class="dropdown-menu">
+            <ul class="list-unstyled">
+              <li class="divider"></li>
+              <li>
+                <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> My Profile</a>
+              </li>
+              <li>
+                <a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {% else %}
+        <div id="userbox" class="userbox">
+        <a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+        </div>
+        <span class="separator"></span>
+        <div id="userbox" class="userbox">
+        <a href="{% url 'account_login' %}">{% trans "Log In" %}</a>
+        </div>
+        {% endif %}
+
+      </div>
+      <!-- end: search & user box -->
+    </header>
+    <!-- end: header -->
+
+
+  <div class="inner-wrapper">
+
+    <section role="main" class="content-body">
+      <header class="page-header">
+        <h2>{% block header_title %}Dashboard{% endblock %}</h2>
+
+        <div class="right-wrapper pull-right">
+          <ol class="breadcrumbs">
+            <li>
+              <a href="{% url 'home:home' %}">
+                <i class="fa fa-home"></i>
+              </a>
+            </li>
+            <li><span>{% block breadcrumb_title %}Dashboard{% endblock %}</span></li>
+          </ol>
+        </div>
+      </header>
+
+      {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- start: page -->
+      {% block content %}
+      <p>Use this document as a way to quick start any new project.</p>
+      {% endblock content %}
+
+      <!-- end: page -->
+    </section>
+  </div>
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {% block javascript %}
+      <!-- Latest JQuery -->
+      <script src="{% static 'js/jquery/jquery.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.browser.mobile.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.placeholder.js' %}"></script>
+
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="{% static 'js/bootstrap/bootstrap.js' %}"></script>
+      <script src="{% static 'js/nanoscroller/nanoscroller.js' %}"></script>
+      <script src="{% static 'js/bootstrap/bootstrap-datepicker.js' %}"></script>
+
+
+      <!-- Your stuff: Third-party javascript libraries go here -->
+      <script src="{% static 'js/jquery/jquery-ui-1.10.4.custom.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.ui.touch-punch.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.appear.js' %}"></script>
+      <script src="{% static 'js/bootstrap/bootstrap-multiselect.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.easypiechart.js' %}"></script>
+      <script src="{% static 'js/flot/jquery.flot.js' %}"></script>
+      <script src="{% static 'js/flot-tooltip/jquery.flot.tooltip.js' %}"></script>
+      <script src="{% static 'js/flot/jquery.flot.pie.js' %}"></script>
+      <script src="{% static 'js/flot/jquery.flot.categories.js' %}"></script>
+      <script src="{% static 'js/flot/jquery.flot.resize.js' %}"></script>
+      <script src="{% static 'js/jquery/jquery.sparkline.js' %}"></script>
+      <script src="{% static 'js/raphael/raphael.js' %}"></script>
+      <script src="{% static 'js/morris/morris.js' %}"></script>
+      <script src="{% static 'js/gauge/gauge.js' %}"></script>
+      <script src="{% static 'js/snap-svg/snap.svg.js' %}"></script>
+      <script src="{% static 'js/liquid-meter/liquid.meter.js' %}"></script>
+
+
+      <!-- place project specific Javascript in this file -->
+      <!-- Theme Base, Components and Settings -->
+      <script src="{% static 'js/theme.js' %}"></script>
+
+      <!-- Theme Custom -->
+      <script src="{% static 'js/theme.custom.js' %}"></script>
+
+      <!-- Theme Initialization Files -->
+      <script src="{% static 'js/theme.init.js' %}"></script>
+
+      <script src="{% static 'js/dashboard/examples.dashboard.js' %}"></script>
+      <script src="{% static 'js/project.js' %}"></script>
+    {% endblock javascript %}
+  </body>
+</html>
+

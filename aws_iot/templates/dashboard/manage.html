@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% load staticfiles i18n %}
+{% load url from future %}
+
+{% block head_title %}Manage{% endblock %}
+{% block header_title %}Manage{% endblock %}
+{% block breadcrumb_title %}Manage{% endblock %}
+{% block manage_menu_active %}nav-active{% endblock %}
+{% block notification_badge_count %}{{ notifications|length }}{% endblock %}
+{% block notification_label_count %}{{ notifications|length }}{% endblock %}
+{% block notification_list %}
+    {% if not notifications|length %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        <i class="fa fa-thumbs-up bg-success"></i>
+      </div>
+      <span class="title">No notification available.</span>
+    </a>
+    </li>
+    {% endif %}
+    {% for note in notifications %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        {% if 'Warning' in note.Loglevel %}
+        <i class="fa fa-warning bg-warning"></i>
+        {% elif 'Error' in note.Loglevel %}
+        <i class="fa fa-minus-circle bg-danger"></i>
+        {% elif "Info" in note.Loglevel %}
+        <i class="fa fa-info-circle bg-success"></i>
+        {% endif %}
+      </div>
+      <span class="title">{{ note.Message }}</span>
+      <span class="message">{{ note.Date }}</span>
+    </a>
+    </li>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading bg-primary">
+                <div class="widget-profile-info">
+                    <div class="panel-heading-icon bg-primary mt-sm">
+                        <i class="fa fa-server"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h4 class="name text-weight-semibold">Hosts</h4>
+                        <h5 class="role">{{ hosts.count }}</h5>
+                        <div class="profile-footer">
+                            <a href="#">(updated 30s ago)</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-no-more table-bordered mb-none">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%"><span class="text-weight-normal text-sm">Name</span></th>
+                                <th style="width: 15%"><span class="text-weight-normal text-sm">Status</span></th>
+                                <th><span class="text-weight-normal text-sm">IP</span></th>
+                                <th><span class="text-weight-normal text-sm">Summary</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for host in hosts.hosts %}
+                            <tr>
+                                <td data-title="Name" class="pt-sm pb-sm">{{ host.name }}</td>
+                                <td data-title="Status" class="pt-sm pb-sm">{{ host.status }}</td>
+                                <td data-title="IP" class="pt-sm pb-sm">{{ host.IP }}</td>
+                                <td data-title="Summary" class="pt-sm pb-sm">Running: {{ host.services_running}} Stopped: {{ host.services_stopped }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel panel-group">
+            <header class="panel-heading bg-primary">
+
+                <div class="widget-profile-info">
+                    <div class="panel-heading-icon bg-primary mt-sm">
+                        <i class="fa fa-gears"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h4 class="name text-weight-semibold">Services</h4>
+                        <h5 class="role">{{ services.count }}</h5>
+                        <div class="profile-footer">
+                            <a href="#">(updated 30s ago)</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="panel-body">
+                <div id="table-services" class="table-responsive">
+                    <table class="table table-hover mb-none">
+                        <thead>
+                            <tr>
+                                <th style="width: 12%"><span class="text-weight-normal text-sm">Name</span></th>
+                                <th style="width: 13%"><span class="text-weight-normal text-sm">Status</span></th>
+                                <th style="width: 15%"><span class="text-weight-normal text-sm">Host</span></th>
+                                <th><span class="text-weight-normal text-sm">Uptime</span></th>
+                                <th><span class="text-weight-normal text-sm">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services.services %}
+                            <tr>
+                                <td class="pt-sm pb-sm">{{ service.name }}</td>
+                                <td class="pt-sm pb-sm">{{ service.status }}</td>
+                                <td class="pt-sm pb-sm">{{ service.host }}</td>
+                                <td class="pt-sm pb-sm">{{ service.uptime }}</td>
+                                <td class="actions-hover actions-fade">
+                                    <a href="" data-toggle="tooltip" data-placement="top" title="Start Service"><i class="fa fa-check-circle"></i></a>
+                                    <a href="" data-toggle="tooltip" data-placement="top" title="Restart Service"><i class="fa fa-refresh"></i></a>
+                                    <a href="" data-toggle="tooltip" data-placement="top" title="Stop Service"><i class="fa fa-power-off"></i></a>
+                                    <a class="accordion-toggle" href="#collapse{{ service.name }}" data-parent="#table-services" data-toggle="collapse" data-placement="top" title="Show Logs"><i class="fa fa-file-text"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="collapse{{ service.name }}" class="accordion-body collapse">
+                                                <div class="scrollable has-scrollbar" data-plugin-scrollable="" style="height: 300px;">
+                                                    <div class="scrollable-content" tabindex="0" style="right: -15px;">
+                                                        <p style="font-weight: bold;">Logs for {{ service.name }}</p>
+                                                        {% lorem 4 p %}
+                                                    </div>
+                                                <div class="scrollable-pane" style="opacity: 1; visibility: visible;"><div class="scrollable-slider" style="height: 74px; transform: translate(0px, 0px);"></div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>
+{% endblock %}

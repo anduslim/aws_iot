@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load staticfiles i18n %}
+{% load url from future %}
+
+{% block head_title %}User{% endblock %}
+{% block header_title %}User{% endblock %}
+{% block breadcrumb_title %}User{% endblock %}
+{% block user_menu_active %}nav-active{% endblock %}
+
+{% block notification_badge_count %}{{ notifications|length }}{% endblock %}
+{% block notification_label_count %}{{ notifications|length }}{% endblock %}
+{% block notification_list %}
+    {% if not notifications|length %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        <i class="fa fa-thumbs-up bg-success"></i>
+      </div>
+      <span class="title">No notification available.</span>
+    </a>
+    </li>
+    {% endif %}
+    {% for note in notifications %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        {% if 'Warning' in note.Loglevel %}
+        <i class="fa fa-warning bg-warning"></i>
+        {% elif 'Error' in note.Loglevel %}
+        <i class="fa fa-minus-circle bg-danger"></i>
+        {% elif "Info" in note.Loglevel %}
+        <i class="fa fa-info-circle bg-success"></i>
+        {% endif %}
+      </div>
+      <span class="title">{{ note.Message }}</span>
+      <span class="message">{{ note.Date }}</span>
+    </a>
+    </li>
+    {% endfor %}
+{% endblock %}
+
+
+{% block content %}
+
+
+{% endblock %}

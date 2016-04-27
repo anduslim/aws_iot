@@ -1,0 +1,44 @@
+{% extends "home/base.html" %}
+
+{% load staticfiles i18n %}
+{% load url from future %}
+
+{% block head_title %}Admin Homepage{% endblock %}
+{% block header_title %}Home{% endblock %}
+{% block breadcrumb_title %}Home{% endblock %}
+
+{% block content %}
+<section class="container-home">
+
+	<!-- Start App Info -->
+	<div id="app_info">
+		<!-- Start Logo -->
+		<a href="#home" class="logo">
+			<img src="{% static 'images/logo.png' %}" alt="OnAdmin">
+		</a>
+		<!-- End Logo -->
+		<span class="tagline">OnAdmin</span>
+		<p>OnAdmin is an adminstration page for OnTalk services.&nbsp; The administrator is able to view and control the OnTalk services via the admin panel.&nbsp; Please log on as shown to access OnAdmin.</p>
+
+		<div class="buttons">
+			<a href="{% url 'account_signup' %}" class="large_button" id="apple" target="_blank">
+				Sign Up
+			</a>
+			<a href="{% url 'account_login' %}" class="large_button" id="android">
+				Log In
+			</a>
+		</div>
+
+		<div class="price right_align"> <!-- Alignments options: right_align, left_align, centered -->
+			<p>Log in here now!</p>
+		</div>
+	</div>
+	<!-- End App Info -->
+
+	<!-- Start Pages -->
+
+	<!-- End Pages -->
+
+	<div class="clear"></div>
+</section>
+{% endblock %}

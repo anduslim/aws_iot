@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% load staticfiles i18n %}
+{% load url from future %}
+
+{% block head_title %}Dashboard{% endblock %}
+{% block header_title %}Dashboard{% endblock %}
+{% block breadcrumb_title %}Dashboard{% endblock %}
+{% block dashboard_menu_active %}nav-active{% endblock %}
+
+{% block notification_badge_count %}{{ notifications|length }}{% endblock %}
+{% block notification_label_count %}{{ notifications|length }}{% endblock %}
+{% block notification_list %}
+    {% if not notifications|length %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        <i class="fa fa-thumbs-up bg-success"></i>
+      </div>
+      <span class="title">No notification available.</span>
+    </a>
+    </li>
+    {% endif %}
+    {% for note in notifications %}
+    <li>
+    <a href="#" class="clearfix">
+      <div class="image">
+        {% if 'Warning' in note.Loglevel %}
+        <i class="fa fa-warning bg-warning"></i>
+        {% elif 'Error' in note.Loglevel %}
+        <i class="fa fa-minus-circle bg-danger"></i>
+        {% elif "Info" in note.Loglevel %}
+        <i class="fa fa-info-circle bg-success"></i>
+        {% endif %}
+      </div>
+      <span class="title">{{ note.Message }}</span>
+      <span class="message">{{ note.Date }}</span>
+    </a>
+    </li>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <section class="panel">
+            <header class="panel-heading bg-white">
+                <div class="panel-heading-icon bg-primary mt-sm">
+                    <i class="fa fa-heartbeat"></i>
+                    <h3 style="font-weight: bold; text-transform: uppercase;  color:#777;">Health</h3>
+                </div>
+            </header>
+            <div class="panel-body">
+                <div class="headline text-primary">{{ overall_status }}
+                </div>
+                <div class="subline">{{ overall_message }}
+                </div>
+                <div class="subtext">
+                </div>
+                <div class="summary-footer">
+                    <span class="datetime text-muted">4:27 PM - 15 Jul 2015</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-tertiary">
+            <div class="panel-body">
+                <div class="widget-summary">
+                    <div class="widget-summary-col widget-summary-col-icon">
+                        <div class="summary-icon bg-tertiary">
+                            <i class="fa fa-gears"></i>
+                        </div>
+                    </div>
+                    <div class="widget-summary-col">
+                        <div class="summary">
+                            <h4 class="title">Services</h4>
+                            <div class="info">
+                                <strong class="amount">{{ services.overall_status }}</strong>
+                                <span class="text-primary">({{ services.count }})</span>
+                            </div>
+                        </div>
+                        <div class="summary-footer">
+                            <a href="#modalServices" class="modal-services text-muted text-uppercase">(View All)</a>
+                            <!-- Modal Form -->
+                            <div id="modalServices" class="modal-block modal-header-color modal-block-info mfp-hide">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        <h2 class="panel-title">Services Overview</h2>
+                                    </header>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-none">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for service in services.services %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ service.name }}</td>
+                                                        <td>{{ service.status }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <footer class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <button class="btn btn-info modal-dismiss">Close</button>
+                                            </div>
+                                        </div>
+                                    </footer>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <section class="panel panel-featured-left panel-featured-tertiary">
+            <div class="panel-body">
+                <div class="widget-summary">
+                    <div class="widget-summary-col widget-summary-col-icon">
+                        <div class="summary-icon bg-tertiary">
+                            <i class="fa fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="widget-summary-col">
+                        <div class="summary">
+                            <h4 class="title">Hosts</h4>
+                            <div class="info">
+                                <strong class="amount">{{ hosts.overall_status }}</strong>
+                                <span class="text-primary">({{ hosts.count }})</span>
+                            </div>
+                        </div>
+                        <div class="summary-footer">
+                            <a href="#modalHosts"class="modal-hosts text-muted text-uppercase">(View All)</a>
+                            <div id="modalHosts" class="modal-block modal-header-color modal-block-info mfp-hide">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        <h2 class="panel-title">Hosts Overview</h2>
+                                    </header>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-none">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>IP</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for host in hosts.hosts %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ host.name }}</td>
+                                                        <td>{{ host.IP }}</td>
+                                                        <td>{{ host.status }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <footer class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <button class="btn btn-info modal-dismiss">Close</button>
+                                            </div>
+                                        </div>
+                                    </footer>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $('.modal-with-form').magnificPopup({
+        type: 'inline',
+        preloader: false,
+        focus: '#name',
+        modal: true,
+
+        // When elemened is focused, some mobile browsers in some cases zoom in
+        // It looks not nice, so we disable it:
+        callbacks: {
+            beforeOpen: function() {
+                if($(window).width() < 700) {
+                    this.st.focus = false;
+                } else {
+                    this.st.focus = '#name';
+                }
+            }
+        }
+    });
+
+</script>
+{% endblock %}

@@ -43,23 +43,23 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-md-6 col-lg-6 col-xl-3">
+    <div class="col-md-12 col-lg-12 col-xl-12">
         <section class="panel">
             <header class="panel-heading bg-white">
                 <div class="panel-heading-icon bg-primary mt-sm">
                     <i class="fa fa-heartbeat"></i>
-                    <h3 style="font-weight: bold; text-transform: uppercase;  color:#777;">Health</h3>
+                    <h3 style="font-weight: bold; text-transform: uppercase;  color:#777; width: 200px; margin-left: -50px;">Current Time</h3>
                 </div>
             </header>
             <div class="panel-body">
-                <div class="headline text-primary">{{ overall_status }}
+                <div id="mytime" class="headline text-primary">{{ overall_status }}
                 </div>
                 <div class="subline">{{ overall_message }}
                 </div>
                 <div class="subtext">
                 </div>
                 <div class="summary-footer">
-                    <span class="datetime text-muted">4:27 PM - 15 Jul 2015</span>
+                    <span id='main_last_datetime'class="datetime text-muted">4:27 PM - 15 Jul 2015</span>
                 </div>
             </div>
         </section>
@@ -73,12 +73,12 @@
                 <div class="widget-summary">
                     <div class="widget-summary-col widget-summary-col-icon">
                         <div class="summary-icon bg-tertiary">
-                            <i class="fa fa-gears"></i>
+                            <i class="fa fa-medkit"></i>
                         </div>
                     </div>
                     <div class="widget-summary-col">
                         <div class="summary">
-                            <h4 class="title">Services</h4>
+                            <h4 class="title">Medication Timing</h4>
                             <div class="info">
                                 <strong class="amount">{{ services.overall_status }}</strong>
                                 <span class="text-primary">({{ services.count }})</span>
@@ -135,12 +135,12 @@
                 <div class="widget-summary">
                     <div class="widget-summary-col widget-summary-col-icon">
                         <div class="summary-icon bg-tertiary">
-                            <i class="fa fa-server"></i>
+                            <i class="fa fa-clock-o"></i>
                         </div>
                     </div>
                     <div class="widget-summary-col">
                         <div class="summary">
-                            <h4 class="title">Hosts</h4>
+                            <h4 class="title">Alert Threshold</h4>
                             <div class="info">
                                 <strong class="amount">{{ hosts.overall_status }}</strong>
                                 <span class="text-primary">({{ hosts.count }})</span>
@@ -216,5 +216,41 @@
         }
     });
 
+
+    $(window).bind("load", function() { 
+
+        updateTime();
+        updateDateTime();
+
+        function updateTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('mytime').innerHTML =
+            h + ":" + m + ":" + s;
+            var t = setTimeout(updateTime, 500);
+        }
+
+        function updateDateTime() {
+            var currentdate = new Date(); 
+            var datetime = "Last Sync: " + currentdate.getDate() + "/"
+                            + (currentdate.getMonth()+1)  + "/" 
+                            + currentdate.getFullYear() + " @ "  
+                            + currentdate.getHours() + ":"  
+                            + currentdate.getMinutes() + ":" 
+                            + currentdate.getSeconds();
+            document.getElementById('main_last_datetime').innerHTML = datetime;
+            var t = setTimeout(updateDateTime, 1000);
+        }
+ 
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            return i;
+        }
+    });
 </script>
+
 {% endblock %}

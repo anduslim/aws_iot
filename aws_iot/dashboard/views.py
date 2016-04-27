@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 from django.core.urlresolvers import reverse
 from braces.views import LoginRequiredMixin
 from aws_iot.users.models import User
-from .models import IntakeTime, MedicationIntake
+from .models import MedicationIntake, SensorNode
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
@@ -201,10 +201,15 @@ def get_intake_timing_api(request, **kwargs):
     '''
 
     data = request.GET
-    getsource = data.get('source', None)
-    getdestination = data.get('destination', None)
+    node_id = data.get('node_id', 100)
 
-    readings = MedicationIntake.objects.get()
+    readings = SensorNode.objects.filter(node_id=node_id)
+
+    for reading in readings:
+        payload = []
+        for med_intake in reading.medication_intake_list:
+            payload.append(med_intake)
+        print(payload)
 
     if readings:
         response_data = {}
@@ -214,7 +219,7 @@ def get_intake_timing_api(request, **kwargs):
 
 
         response_data['readings'] = {
-                                    'payload': readings
+                                    'payload': payload
                                     }
 
         return HttpResponse(json.dumps(response_data, cls=DjangoJSONEncoder), status=200, content_type="application/json")
